@@ -18,9 +18,14 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:$logback_version"
     implementation "io.ktor:ktor-server-content-negotiation:$ktor_version"
     implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
+    implementation 'org.testng:testng:7.5'
+    implementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    implementation ("com.github.fppt:jedis-mock:1.0.2")
 
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test"
+    testImplementation "org.mockito:mockito-core:4.5.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
     compile 'redis.clients:jedis:4.2.3'
 }
 
