@@ -5,6 +5,7 @@ import Services.UserService
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.*
+import kotlin.math.exp
 import kotlin.test.assertEquals
 
 class UserServiceShould {
@@ -41,28 +42,19 @@ class UserServiceShould {
 
     @Test
     fun `Allow users to follow another user`(){
-
-        val (mockUserRepository: IUserRepository, userService) = GivenAnInstanceOfUserService()
+        val (mockUserRepository: IUserRepository, userService) = GivenTwoUsersAndUserServiceInstance()
         whenever(mockUserRepository.GetUser("Rodri")).thenReturn(User("Rodrigo", "Fernandez", "Rodri"))
-        whenever(mockUserRepository.GetUser("Pepe")).thenReturn(User("Pedro", "Flores", "Pepe"))
+        whenever(mockUserRepository.GetUser("Nico")).thenReturn(User("Nicolas", "Soria", "Nico"))
 
-        val (anotherUser, actualMessage) = WhenTryToFollowAnotherUser(userService)
+        val receivedMessage = WhenFollowAnotherUser(userService)
 
-        ThenExpectSuccesFollowMessage(anotherUser, actualMessage)
+        ThenExpectTheSuccesMessage(receivedMessage)
+
     }
 
-    @Test
-    fun `Not allow to follow twice the same user`(){
 
-        val (mockUserRepository: IUserRepository, userService) = GivenAnInstanceOfUserService()
-        whenever(mockUserRepository.GetUser("Rodri")).thenReturn(User("Rodrigo", "Fernandez", "Rodri"))
-        whenever(mockUserRepository.GetUser("Pepe")).thenReturn(User("Pedro", "Flores", "Pepe"))
 
-        val actualMessage = WhenTryToFollowTheSameUserTwice(userService)
 
-        ThenDontAddTheUser(actualMessage)
-
-    }
 
 }
 
@@ -71,6 +63,13 @@ class UserServiceShould {
     private fun GivenAnInstanceOfUserService(): Pair<IUserRepository, UserService> {
         val mockUserRepository: IUserRepository = mock()
         val userService = UserService(mockUserRepository)
+        return Pair(mockUserRepository, userService)
+    }
+    private fun GivenTwoUsersAndUserServiceInstance(): Pair<IUserRepository, UserService> {
+        val mockUserRepository: IUserRepository = mock()
+        val userService = UserService(mockUserRepository)
+        userService.Register(UserData("Rodrigo", "Fernandez", "Rodri"))
+        userService.Register(UserData("Nicolas", "Soria", "Nico"))
         return Pair(mockUserRepository, userService)
     }
 
@@ -87,24 +86,17 @@ class UserServiceShould {
         return Pair(user, newUserData)
     }
 
-    private fun WhenTryToFollowAnotherUser(userService: UserService): Pair<UserData, String> {
-       val anotherUser = UserData("Pedro", "Flores", "Pepe")
-       val actualMessage = userService.FollowUser("Rodri", "Pepe")
-       return Pair(anotherUser, actualMessage)
+    private fun WhenFollowAnotherUser(userService: UserService): String {
+        val receivedMessage = userService.FollowUser("Rodri", "Nico")
+        return receivedMessage
     }
-
-    private fun WhenTryToFollowTheSameUserTwice(userService: UserService): String {
-        userService.FollowUser("Rodri", "Pepe")
-        return userService.FollowUser("Rodri", "Pepe")
-    }
-
 
     private fun ThenExecuteTheAddFunctionWithUserData(
-        mockUserRepository: IUserRepository,
-        userData: UserData
-    ) {
-        Mockito.verify(mockUserRepository, times(1)).AddUser(User(userData.name, userData.lastName, userData.nickName))
-    }
+            mockUserRepository: IUserRepository,
+            userData: UserData
+        ) {
+            Mockito.verify(mockUserRepository, times(1)).AddUser(User(userData.name, userData.lastName, userData.nickName))
+        }
     private fun ThenCheckIfUserExists(mockUserRepository: IUserRepository, userData: UserData) {
         verify(mockUserRepository).ExistUser(userData.nickName)
     }
@@ -114,14 +106,9 @@ class UserServiceShould {
        newUserData: UserData
     ) {verify(mockUserRepository).EditUser(user, newUserData.name, newUserData.lastName)
       }
-    private fun ThenExpectSuccesFollowMessage(anotherUser: UserData, actualMessage: String) {
-      val expectedMessage = "El usuario ${anotherUser.nickName} se ha agregado a tu lista de seguidos"
-      assertEquals(expectedMessage, actualMessage)
-    }
-
-    private fun ThenDontAddTheUser(actualMessage: String) {
-        val expectedMessage = "Ya sigues a este usuario"
-        assertEquals(expectedMessage, actualMessage)
+    private fun ThenExpectTheSuccesMessage(receivedMessage: String) {
+        val expectedMessage = "El usuario Nico se ha agregado a tu lista de seguidos"
+        assertEquals(expectedMessage, receivedMessage)
     }
 
 

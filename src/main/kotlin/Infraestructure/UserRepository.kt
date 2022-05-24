@@ -1,0 +1,4 @@
+package Infraestructure
+
+class UserRepository {
+}

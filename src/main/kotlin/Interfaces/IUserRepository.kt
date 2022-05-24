@@ -13,4 +13,7 @@ interface IUserRepository {
 
     fun ExistUser(nickName : String) : Boolean
 
+    fun FollowUser(userNickname : String, userToFollowNickname : String) : Boolean
+    fun GetFollowersList(userNickname : String) : MutableList<String>
+
 }

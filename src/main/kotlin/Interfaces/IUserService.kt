@@ -11,6 +11,6 @@ interface IUserService {
 
     fun FollowUser(user : String, followedUser : String) : String
 
-    fun GetFollowersList(nickName : String) :  MutableList<User>?
+    fun GetFollowersList(nickName : String) :  MutableList<String>
 
 }

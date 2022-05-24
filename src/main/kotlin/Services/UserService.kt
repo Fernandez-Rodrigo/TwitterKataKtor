@@ -27,21 +27,23 @@ class UserService (private val userRepoInterface : IUserRepository) : IUserServi
     }
 
     override fun FollowUser(user : String, followedUser : String): String {
-            userRepoInterface.GetUser(followedUser)?.let {
-            if(userRepoInterface.GetUser(user)?.followList?.contains(it) == true){
+        return if(userRepoInterface.GetUser(user) != null && userRepoInterface.GetUser(followedUser) != null){
+            if(userRepoInterface.FollowUser(user, followedUser))
+            {
                 return "Ya sigues a este usuario"
             }else
-            { userRepoInterface.GetUser(user)?.followList?.add(it)
-                return "El usuario $followedUser se ha agregado a tu lista de seguidos"}}
+            {return "El usuario $followedUser se ha agregado a tu lista de seguidos"}
 
+        }else{
+            "El usuario no existe"
+        }
 
-      return "No existe dicho usuario"
 
     }
 
-    override fun GetFollowersList(nickName: String) : MutableList<User>? {
+    override fun GetFollowersList(nickName: String) : MutableList<String> {
 
-        return userRepoInterface.GetUser(nickName)?.followList
+        return userRepoInterface.GetFollowersList(nickName)
     }
 
     private fun CheckNicknameDuplication(nickName: String): Boolean {

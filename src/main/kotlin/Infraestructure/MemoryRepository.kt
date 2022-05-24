@@ -29,4 +29,22 @@ class MemoryRepository : IUserRepository{
 
     }
 
+    override fun FollowUser(userNickname: String, userToFollowNickname: String): Boolean {
+
+        return if(userMap[userNickname]?.followList?.contains(userNickname) == true){
+            false
+        }else{userMap[userNickname]?.followList?.add(userToFollowNickname)
+            true
+        }
+    }
+
+    override fun GetFollowersList(userNickname: String): MutableList<String> {
+        return if(userMap[userNickname] != null){
+            userMap[userNickname]?.followList ?:  mutableListOf()
+        } else {
+            mutableListOf()
+        }
+    }
+
+
 }

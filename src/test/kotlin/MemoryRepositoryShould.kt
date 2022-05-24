@@ -45,6 +45,16 @@ class MemoryRepositoryShould {
         ThenTheNameAndLastnameChanged(user)
     }
 
+    @Test
+    fun `Allow user to follow another one with nickname`(){
+        val (memoryRepository, user) = GivenAUser()
+        val userToFollow = User("Pedro", "Lopez", "Pepe")
+
+
+
+        assertTrue { memoryRepository.FollowUser(user.nickName, "Pepe") }
+    }
+
 
 
     //region Private Methods

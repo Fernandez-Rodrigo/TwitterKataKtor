@@ -33,6 +33,6 @@ fun main(args: Array<String>) {
 
     println(followUser.ExecuteFollow(user1Data.nickName, user2Data.nickName))
 
-    checkFollowers.ExecuteCheck(user1Data.nickName)?.forEach{ follower -> println(follower.nickName)}
+    //checkFollowers.ExecuteCheck(user1Data.nickName)?.forEach{ follower -> println(follower.nickName)}
 
 }

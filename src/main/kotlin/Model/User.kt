@@ -2,5 +2,5 @@ package Model
 
 data class User(var name: String, var lastName: String, val nickName: String) {
 
-    var followList = mutableListOf<User>()
+    var followList = mutableListOf<String>()
 }
