@@ -37,8 +37,6 @@ class UserService (private val userRepoInterface : IUserRepository) : IUserServi
         }else{
             "El usuario no existe"
         }
-
-
     }
 
     override fun GetFollowersList(nickName: String) : MutableList<String> {
@@ -49,6 +47,18 @@ class UserService (private val userRepoInterface : IUserRepository) : IUserServi
     private fun CheckNicknameDuplication(nickName: String): Boolean {
 
         return userRepoInterface.ExistUser(nickName)
+    }
+
+    override fun GetUserInfo(nickName : String) : UserData {
+        val user = userRepoInterface.GetUser(nickName)
+        return if(user != null){
+
+            UserData(user.name, user.lastName, user.nickName)
+
+        }else {
+            UserData("Null", "Null", "Nsull")
+        }
+
     }
 
 }

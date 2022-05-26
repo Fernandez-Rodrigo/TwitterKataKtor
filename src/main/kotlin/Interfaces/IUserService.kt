@@ -1,7 +1,6 @@
 package Interfaces
 
 import DataClasses.UserData
-import Model.User
 
 interface IUserService {
 
@@ -12,5 +11,7 @@ interface IUserService {
     fun FollowUser(user : String, followedUser : String) : String
 
     fun GetFollowersList(nickName : String) :  MutableList<String>
+
+    fun GetUserInfo(nickName : String) : UserData
 
 }

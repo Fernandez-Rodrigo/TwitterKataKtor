@@ -1,15 +1,20 @@
 package com.jetbrains.handson.httpapi
+import Context.Context
 import DataBase.UsersDataBase
+import com.jetbrains.handson.httpapi.Routes.registerUserRoutes
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 
+
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-fun Application.module() {
+    val context = Context()
 
-  install(ContentNegotiation){json()}
+    fun Application.module() {
 
-  // Probar KREDS
+      install(ContentNegotiation){json()}
 
-}
+      registerUserRoutes(context)
+
+    }
