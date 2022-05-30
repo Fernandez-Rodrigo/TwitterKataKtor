@@ -16,4 +16,6 @@ interface IUserRepository {
     fun FollowUser(userNickname : String, userToFollowNickname : String) : Boolean
     fun GetFollowersList(userNickname : String) : MutableList<String>
 
+    fun Twit(message : String)
+
 }

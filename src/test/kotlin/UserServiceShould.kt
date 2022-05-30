@@ -1,11 +1,11 @@
 import DataClasses.UserData
+import Enum.ResponseEnum
 import Interfaces.IUserRepository
 import Model.User
 import Services.UserService
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.*
-import kotlin.math.exp
 import kotlin.test.assertEquals
 
 class UserServiceShould {
@@ -43,16 +43,15 @@ class UserServiceShould {
     @Test
     fun `Allow users to follow another user`(){
         val (mockUserRepository: IUserRepository, userService) = GivenTwoUsersAndUserServiceInstance()
-        whenever(mockUserRepository.GetUser("Rodri")).thenReturn(User("Rodrigo", "Fernandez", "Rodri"))
-        whenever(mockUserRepository.GetUser("Nico")).thenReturn(User("Nicolas", "Soria", "Nico"))
+        whenever(mockUserRepository.GetUser("Pedro")).thenReturn(User("Rodrigo", "Fernandez", "Pedro"))
+        whenever(mockUserRepository.GetUser("Lele")).thenReturn(User("Nicolas", "Soria", "Lele"))
+        whenever(mockUserRepository.FollowUser("Pedro", "Lele")).thenReturn(true)
 
         val receivedMessage = WhenFollowAnotherUser(userService)
 
         ThenExpectTheSuccesMessage(receivedMessage)
 
     }
-
-
 
 
 
@@ -86,10 +85,9 @@ class UserServiceShould {
         return Pair(user, newUserData)
     }
 
-    private fun WhenFollowAnotherUser(userService: UserService): String {
-        val receivedMessage = userService.FollowUser("Rodri", "Nico")
-        return receivedMessage
-    }
+private fun WhenFollowAnotherUser(userService: UserService): ResponseEnum {
+    return userService.FollowUser("Pedro", "Lele")
+}
 
     private fun ThenExecuteTheAddFunctionWithUserData(
             mockUserRepository: IUserRepository,
@@ -106,8 +104,8 @@ class UserServiceShould {
        newUserData: UserData
     ) {verify(mockUserRepository).EditUser(user, newUserData.name, newUserData.lastName)
       }
-    private fun ThenExpectTheSuccesMessage(receivedMessage: String) {
-        val expectedMessage = "El usuario Nico se ha agregado a tu lista de seguidos"
+    private fun ThenExpectTheSuccesMessage(receivedMessage: ResponseEnum) {
+        val expectedMessage = ResponseEnum.FOUND
         assertEquals(expectedMessage, receivedMessage)
     }
 

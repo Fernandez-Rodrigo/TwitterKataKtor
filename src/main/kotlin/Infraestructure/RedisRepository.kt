@@ -12,7 +12,10 @@ class RedisRepository (val server : JedisPooled) : IUserRepository{
     }
 
     override fun GetUser(nickName: String): User? {
-        return User(server.hget(nickName, "Name"), server.hget(nickName, "LastName"), nickName)
+        return if(server.hget(nickName, "Name") == null || server.hget(nickName, "LastName") == null){
+            null
+        }else
+            User(server.hget(nickName, "Name"), server.hget(nickName, "LastName"), nickName)
     }
 
     override fun EditUser(user: User, newName: String, newLastName: String) {
@@ -38,6 +41,10 @@ class RedisRepository (val server : JedisPooled) : IUserRepository{
     override fun GetFollowersList(userNickname : String): MutableList<String> {
 
         return server.lrange(userNickname+"Follows",0,-1)
+    }
+
+    override fun Twit(message: String) {
+        TODO("Not yet implemented")
     }
 
 }

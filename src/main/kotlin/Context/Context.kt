@@ -10,11 +10,11 @@ import RegisterUser
 import Services.UserService
 import redis.clients.jedis.JedisPooled
 
-class Context {
+class Context(server : JedisPooled = JedisPooled("127.0.0.1", 6379)) {
 
-    private val jediPool = JedisPooled("127.0.0.1", 6379)
+
     private val memoryRepository = MemoryRepository()
-    private val redisRepository = RedisRepository(jediPool)
+    private val redisRepository = RedisRepository(server)
     private val userService = UserService(redisRepository)
 
 
@@ -34,7 +34,7 @@ class Context {
         return FollowUsers(userService)
     }
 
-    fun GetCheckFollowersInstanc() : CheckFollowers{
+    fun GetCheckFollowersInstance() : CheckFollowers{
 
         return CheckFollowers(userService)
     }
@@ -43,5 +43,6 @@ class Context {
 
         return RegisterUser(userService)
     }
+
 
 }

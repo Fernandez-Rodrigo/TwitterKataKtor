@@ -33,7 +33,8 @@ class MemoryRepository : IUserRepository{
 
         return if(userMap[userNickname]?.followList?.contains(userNickname) == true){
             false
-        }else{userMap[userNickname]?.followList?.add(userToFollowNickname)
+        }else{
+            userMap[userNickname]?.followList?.add(userToFollowNickname)
             true
         }
     }
@@ -44,6 +45,10 @@ class MemoryRepository : IUserRepository{
         } else {
             mutableListOf()
         }
+    }
+
+    override fun Twit(message: String) {
+        TODO("Not yet implemented")
     }
 
 

@@ -1,47 +1,52 @@
 package Services
 
 import DataClasses.UserData
+import Enum.ResponseEnum
 import Interfaces.IUserRepository
 import Interfaces.IUserService
 import Model.User
 
 class UserService (private val userRepoInterface : IUserRepository) : IUserService{
 
-    override fun Register(userData : UserData) : String
+    override fun Register(userData : UserData) : ResponseEnum
     {
         return if(CheckNicknameDuplication(userData.nickName)){
-            "Error, Nickname ya utilizado"
-        } else {  userRepoInterface.AddUser(User(userData.name, userData.lastName, userData.nickName))
-            "Usuario ${userData.nickName} registrado correctamente."
+            ResponseEnum.DUPLICATED
+        } else { userRepoInterface.AddUser(User(userData.name, userData.lastName, userData.nickName))
+            ResponseEnum.CREATED
         }
     }
 
-    override fun ChangeName(newUserData: UserData) : String{
+    override fun ChangeName(newUserData: UserData) : ResponseEnum{
        val user = userRepoInterface.GetUser(newUserData.nickName)
         return if (user != null) {
            userRepoInterface.EditUser(user, newUserData.name, newUserData.lastName)
-            "El nombre y apellido del usuario fueron actualizados correctamente"
+            ResponseEnum.SUCCESS
         } else{
-            "Error, no se pudo actualizar el nombre y apellido del usuario"
+            ResponseEnum.FAILURE
         }
     }
 
-    override fun FollowUser(user : String, followedUser : String): String {
+    override fun FollowUser(user : String, followedUser : String): ResponseEnum {
         return if(userRepoInterface.GetUser(user) != null && userRepoInterface.GetUser(followedUser) != null){
             if(userRepoInterface.FollowUser(user, followedUser))
             {
-                return "Ya sigues a este usuario"
+                return ResponseEnum.FOUND
             }else
-            {return "El usuario $followedUser se ha agregado a tu lista de seguidos"}
+            {return ResponseEnum.DUPLICATED}
 
         }else{
-            "El usuario no existe"
+            ResponseEnum.FAILURE
         }
     }
 
-    override fun GetFollowersList(nickName: String) : MutableList<String> {
+    override fun GetFollowersList(nickName: String) : Pair<ResponseEnum, MutableList<String>> {
 
-        return userRepoInterface.GetFollowersList(nickName)
+        return if (userRepoInterface.GetUser(nickName) != null) {
+            Pair(ResponseEnum.FOUND, userRepoInterface.GetFollowersList(nickName))
+        } else {
+            Pair(ResponseEnum.FAILURE, mutableListOf())
+        }
     }
 
     private fun CheckNicknameDuplication(nickName: String): Boolean {
@@ -49,16 +54,15 @@ class UserService (private val userRepoInterface : IUserRepository) : IUserServi
         return userRepoInterface.ExistUser(nickName)
     }
 
-    override fun GetUserInfo(nickName : String) : UserData {
+    override fun GetUserInfo(nickName : String) : Pair<ResponseEnum, UserData> {
         val user = userRepoInterface.GetUser(nickName)
         return if(user != null){
-
-            UserData(user.name, user.lastName, user.nickName)
-
+            Pair(ResponseEnum.FOUND, UserData(user.name, user.lastName, user.nickName))
         }else {
-            UserData("Null", "Null", "Nsull")
+            Pair(ResponseEnum.FAILURE, UserData("Null", "Null", "Null"))
         }
 
     }
+
 
 }

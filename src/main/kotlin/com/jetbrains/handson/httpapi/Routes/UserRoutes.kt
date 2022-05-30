@@ -1,4 +1,5 @@
 package com.jetbrains.handson.httpapi.Routes
+import APIs.UserAPI
 import Context.Context
 import DataClasses.FollowData
 import DataClasses.UserData
@@ -8,63 +9,86 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.userRouting(context : Context) {
+fun Route.userRouting(userAPI : UserAPI) {
 
-    route("/GetUser") {
+    route("/user") {
 
-        get ("{nickName}"){
+        post("/Data") {
+           /*val id = call.parameters["nickName"] ?: return@get call.respondText(
+
+              "Missing or malformed nickName",
+
+                status = HttpStatusCode.BadRequest
+            )
+
+            */
+            val newUserData = call.receive<UserData>()
+            call.respond(userAPI.GetUserDataResponse(newUserData.nickName).first.response)
+        }
+
+        post("/RegisterUser") {
+
+            val newUserData = call.receive<UserData>()
+
+            call.respond(userAPI.RegisterUserResponse(newUserData).first.response)
+        }
+
+
+        post("/EditInfo") {
+            val newUserData = call.receive<UserData>()
+
+            val response = userAPI.EditUserDataResponse(newUserData)
+            call.respondText(
+                response.second,
+                status = response.first.response
+            )
+        }
+
+        post("/Follow") {
+
+            val usersData = call.receive<FollowData>()
+            val response = userAPI.FollowUserResponse(usersData)
+            call.respondText(response.second,
+                status = response.first.response
+            )
+
+        }
+
+
+        post("/WriteTwit") {
+
+            //    context.GetTwitInstance().ExecuteTwit(twitMessage)
+
+            call.respond(HttpStatusCode.OK)
+        }
+    }
+
+
+    route("/GetFollowres"){
+
+        get("{nickName}") {
+
             val id = call.parameters["nickName"] ?: return@get call.respondText(
 
                 "Missing or malformed nickName",
 
                 status = HttpStatusCode.BadRequest)
-
-           val user = context.GetUserDataInstance().ExecuteGetUserData(id)
-
-            call.respond("Nombre: " + user.name + " Apellido: " + user.lastName + " Nickname: " + user.nickName)
+            val response = userAPI.CheckFollowersResponse(id).first.response
+                 call.respondText("Text", status = response)
         }
+
+     }
+
+
     }
 
-    route("/RegisterUser") {
-        post() {
-           val newUserData = call.receive<UserData>()
 
-            context.GetRegisterUserInstance().ExecuteRegister(newUserData)
 
-            call.respondText ("El usuario ${newUserData.nickName} a sido regstrado correctamente" , status = HttpStatusCode.Created)
-        }
-    }
-
-    route("/EditUserData"){
-
-            post {
-                val newUserData = call.receive<UserData>()
-
-                context.GetEditUserDataInstance().ExecuteChangeName(newUserData)
-
-                call.respondText ("El usuario ${newUserData.nickName} a sido modificado correctamente" , status = HttpStatusCode.OK)
-            }
-    }
-
-    route("/Follow"){
-
-        post {
-            val usersData = call.receive<FollowData>()
-
-            context.GetFollowUserDataInstance().ExecuteFollow(usersData.userNickname, usersData.userToFollowNickname)
-
-            call.respondText ("El usuario ${usersData.userNickname} sigue a ${usersData.userToFollowNickname}" , status = HttpStatusCode.OK)
-
-        }
-    }
-
-}
-
-fun Application.registerUserRoutes(context: Context) {
+fun Application.registerUserRoutes(userAPI: UserAPI) {
 
     routing {
 
-        userRouting(context)
+        userRouting(userAPI)
 
     }
 
