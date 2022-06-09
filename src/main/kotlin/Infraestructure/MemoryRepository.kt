@@ -47,9 +47,4 @@ class MemoryRepository : IUserRepository{
         }
     }
 
-    override fun Twit(message: String) {
-        TODO("Not yet implemented")
-    }
-
-
 }

@@ -1,5 +1,5 @@
-import DataClasses.UserData
-import Infraestructure.MemoryRepository
+package Infraestructure
+
 import Model.User
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -48,7 +48,7 @@ class MemoryRepositoryShould {
     @Test
     fun `Allow user to follow another one with nickname`(){
         val (memoryRepository, user) = GivenAUser()
-        val userToFollow = User("Pedro", "Lopez", "Pepe")
+         User("Pedro", "Lopez", "Pepe")
 
 
 
@@ -56,10 +56,7 @@ class MemoryRepositoryShould {
     }
 
 
-
     //region Private Methods
-
-
 
     private fun GivenAUser(): Pair<MemoryRepository, User> {
         val memoryRepository = MemoryRepository()

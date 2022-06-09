@@ -4,7 +4,6 @@ import Model.User
 import redis.clients.jedis.JedisPooled
 
 class RedisRepository (val server : JedisPooled) : IUserRepository{
-//TODO  Sacar el mapa, que cree usuarios cuando se llama. Meter la funcionalidad de follow acá. Después pensar si se puede mezclar el repo cache con redis
 
     override fun AddUser(newUser: User) {
         server.hset(newUser.nickName, "Name", newUser.name)
@@ -43,8 +42,5 @@ class RedisRepository (val server : JedisPooled) : IUserRepository{
         return server.lrange(userNickname+"Follows",0,-1)
     }
 
-    override fun Twit(message: String) {
-        TODO("Not yet implemented")
-    }
 
 }

@@ -1,4 +1,7 @@
+package API
+
 import APIs.UserAPI
+import Context.Context
 import DataClasses.FollowData
 import DataClasses.UserData
 import Enum.ResponseEnum
@@ -14,7 +17,8 @@ class UserAPIShould {
         .start()
 
     private val jediServer = JedisPooled(server.host, server.bindPort)
-    private val userAPI = UserAPI(jediServer)
+    private val context = Context(jediServer)
+    private val userAPI = UserAPI(context)
 
     @Test
     fun `Return correct response when try to get an existing user`() {
@@ -139,6 +143,8 @@ class UserAPIShould {
     }
 
 
+
+
     //region Private Methods
 
     private fun `Given a new user register`(): UserData {
@@ -154,8 +160,7 @@ class UserAPIShould {
 
 
     private fun `When try to register the new user`(newUser: UserData): Pair<ResponseEnum, String> {
-        val response = userAPI.RegisterUserResponse(newUser)
-        return response
+        return userAPI.RegisterUserResponse(newUser)
     }
 
 
@@ -164,8 +169,7 @@ class UserAPIShould {
     }
 
     private fun `When try to get a non exist user data`(): Pair<ResponseEnum, UserData> {
-        val response = userAPI.GetUserDataResponse("NoExiste")
-        return response
+        return userAPI.GetUserDataResponse("NoExiste")
     }
 
     private fun `Then expect the http found and user data`(

@@ -8,5 +8,5 @@ enum class ResponseEnum(val response : HttpStatusCode) {
     FAILURE(response = HttpStatusCode.BadRequest),
     CREATED(response = HttpStatusCode.Created),
     DUPLICATED(response = HttpStatusCode.NotAcceptable),
-    FOUND(response = HttpStatusCode.Found)
+    FOUND(response = HttpStatusCode.OK)
 }

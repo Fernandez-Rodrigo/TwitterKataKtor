@@ -1,5 +1,8 @@
+package Actions
+
 import DataClasses.UserData
 import Interfaces.IUserService
+import RegisterUser
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify

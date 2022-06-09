@@ -1,4 +1,5 @@
-import Infraestructure.RedisRepository
+package Infraestructure
+
 import Model.User
 import com.github.fppt.jedismock.RedisServer
 import org.junit.Test
@@ -73,6 +74,7 @@ class RedisRepositoryShould {
         `Then expect the follower list to have four entries`(redisRepo, expectedUser)
 
     }
+
 
 
 

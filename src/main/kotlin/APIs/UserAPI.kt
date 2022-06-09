@@ -2,14 +2,12 @@ package APIs
 
 import Context.Context
 import DataClasses.FollowData
+import DataClasses.TwitData
 import DataClasses.UserData
 import Enum.ResponseEnum
-import io.ktor.http.*
 import redis.clients.jedis.JedisPooled
 
-open class UserAPI (server : JedisPooled = JedisPooled("127.0.0.1", 6379)) {
-
-    private val context = Context(server)
+open class UserAPI (private val context : Context = Context(JedisPooled("127.0.0.1", 6379))) {
 
     fun CheckFollowersResponse(nickName : String) : Pair<ResponseEnum, MutableList<String>> {
 
@@ -35,9 +33,9 @@ open class UserAPI (server : JedisPooled = JedisPooled("127.0.0.1", 6379)) {
 
                 Pair(ResponseEnum.DUPLICATED, "Ya sigues a este usuario")
             }
-            ResponseEnum.FOUND -> {
+            ResponseEnum.SUCCESS -> {
 
-                Pair(ResponseEnum.FOUND, "Ahora sigues a "+usersData.userToFollowNickname)
+                Pair(ResponseEnum.SUCCESS, "Ahora sigues a "+usersData.userToFollowNickname)
             }
             else -> {
 
@@ -65,5 +63,6 @@ open class UserAPI (server : JedisPooled = JedisPooled("127.0.0.1", 6379)) {
         }
 
     }
+
 
 }

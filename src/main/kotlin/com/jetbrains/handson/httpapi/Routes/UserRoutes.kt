@@ -1,36 +1,44 @@
 package com.jetbrains.handson.httpapi.Routes
+import APIs.TwitAPI
 import APIs.UserAPI
 import Context.Context
 import DataClasses.FollowData
+import DataClasses.NickNameData
+import DataClasses.TwitData
 import DataClasses.UserData
+import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.userRouting(userAPI : UserAPI) {
+fun Route.userRouting(userAPI : UserAPI, twitAPI : TwitAPI) {
 
     route("/user") {
 
-        post("/Data") {
-           /*val id = call.parameters["nickName"] ?: return@get call.respondText(
 
-              "Missing or malformed nickName",
+        get("/") {
 
-                status = HttpStatusCode.BadRequest
-            )
+            call.respondText("Hello, world!", status = HttpStatusCode.Created)
+        }
 
-            */
-            val newUserData = call.receive<UserData>()
-            call.respond(userAPI.GetUserDataResponse(newUserData.nickName).first.response)
+        get ("{nickName}") {
+            val id = call.parameters["nickName"] ?: return@get call.respondText(
+
+                "Missing or malformed nickName",
+
+                status = HttpStatusCode.BadRequest)
+
+            call.respondText (userAPI.GetUserDataResponse(id).second.nickName, status = HttpStatusCode.OK )
         }
 
         post("/RegisterUser") {
 
             val newUserData = call.receive<UserData>()
+            val response = userAPI.RegisterUserResponse(newUserData)
 
-            call.respond(userAPI.RegisterUserResponse(newUserData).first.response)
+            call.respondText (response.second, status = response.first.response)
         }
 
 
@@ -57,14 +65,31 @@ fun Route.userRouting(userAPI : UserAPI) {
 
         post("/WriteTwit") {
 
-            //    context.GetTwitInstance().ExecuteTwit(twitMessage)
+            val twitData = call.receive<TwitData>()
+            val response = twitAPI.TwitResponse(twitData)
 
-            call.respond(HttpStatusCode.OK)
+            call.respondText(response.second, status = response.first.response)
         }
+
+
     }
 
+    route("/Twits"){
 
-    route("/GetFollowres"){
+        get ("{nickName}"){
+            val id = call.parameters["nickName"] ?: return@get call.respondText(
+
+                "Missing or malformed nickName",
+
+                status = HttpStatusCode.BadRequest)
+            val response = twitAPI.GetTwitsResponse(id)
+
+            call.respondText(Gson().toJson(response.second), status = response.first.response)
+        }
+
+    }
+
+    route("/GetFollowers"){
 
         get("{nickName}") {
 
@@ -73,8 +98,9 @@ fun Route.userRouting(userAPI : UserAPI) {
                 "Missing or malformed nickName",
 
                 status = HttpStatusCode.BadRequest)
-            val response = userAPI.CheckFollowersResponse(id).first.response
-                 call.respondText("Text", status = response)
+            val response = userAPI.CheckFollowersResponse(id)
+                 call.respondText(Gson().toJson(response.second) , status = response.first.response)
+
         }
 
      }
@@ -84,11 +110,11 @@ fun Route.userRouting(userAPI : UserAPI) {
 
 
 
-fun Application.registerUserRoutes(userAPI: UserAPI) {
+fun Application.registerUserRoutes(userAPI: UserAPI, twitAPI: TwitAPI) {
 
     routing {
 
-        userRouting(userAPI)
+        userRouting(userAPI, twitAPI)
 
     }
 

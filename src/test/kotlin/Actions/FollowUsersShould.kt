@@ -1,3 +1,5 @@
+package Actions
+
 import Action.FollowUsers
 import Interfaces.IUserService
 import org.junit.Test

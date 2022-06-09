@@ -1,3 +1,5 @@
+package Model
+
 import DataClasses.UserData
 import Model.User
 import org.junit.Test
@@ -10,7 +12,7 @@ class UserShould {
     @Test
     fun `Be Created With Real Name`(){
 
-        val user = GivenANewUser()
+        GivenANewUser()
 
         val (nameReceived, lastNameReceived) = WhenRegisterWithRealName(userData = UserData("Rodrigo", "Fernandez", "Rodrigo") )
 

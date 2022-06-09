@@ -1,4 +1,7 @@
+package Actions
+
 import Action.Twit
+import DataClasses.TwitData
 import Interfaces.ITwitService
 import Services.TwitService
 import org.junit.Test
@@ -28,12 +31,13 @@ class TwitShould {
     }
 
     private fun `When try to twit`(twit: Twit) {
-        twit.ExecuteTwit("Twit")
+        val twitData = TwitData("Rodri", "Twit")
+        twit.ExecuteTwit(twitData)
     }
 
 
     private fun `Then expect to execute twit action`(mockTwitService: ITwitService) {
-        verify(mockTwitService).Twit("Twit")
+        verify(mockTwitService).Twit("Rodri","Twit")
     }
 
 

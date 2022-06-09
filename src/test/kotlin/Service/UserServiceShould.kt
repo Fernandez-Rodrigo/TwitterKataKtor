@@ -1,3 +1,5 @@
+package Service
+
 import DataClasses.UserData
 import Enum.ResponseEnum
 import Interfaces.IUserRepository
@@ -5,14 +7,17 @@ import Model.User
 import Services.UserService
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.kotlin.*
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 
 class UserServiceShould {
     @Test
     fun `Be able to add a new user to user list`(){
 
-        val (mockUserRepository: IUserRepository, userService) = GivenAnInstanceOfUserService()
+        val (mockUserRepository: Interfaces.IUserRepository, userService) = GivenAnInstanceOfUserService()
 
         val userData = WhenANewUserIsRegistered(userService)
 
@@ -22,7 +27,7 @@ class UserServiceShould {
     @Test
     fun `Check if the nickname already exists`(){
 
-        val (mockUserRepository: IUserRepository, userService) = GivenAnInstanceOfUserService()
+        val (mockUserRepository: Interfaces.IUserRepository, userService) = GivenAnInstanceOfUserService()
 
         val userData = WhenANewUserIsRegistered(userService)
 
@@ -32,7 +37,7 @@ class UserServiceShould {
     @Test
     fun `Be able to change the real name of the user`(){
 
-        val (mockUserRepository: IUserRepository, userService) = GivenAnInstanceOfUserService()
+        val (mockUserRepository: Interfaces.IUserRepository, userService) = GivenAnInstanceOfUserService()
         whenever(mockUserRepository.GetUser("Rodri")).thenReturn(User("Rodrigo", "Fernandez", "Rodri"))
 
         val (user, newUserData) = WhenRegisterAndTryToChangeTheUserData(userService)
@@ -42,7 +47,7 @@ class UserServiceShould {
 
     @Test
     fun `Allow users to follow another user`(){
-        val (mockUserRepository: IUserRepository, userService) = GivenTwoUsersAndUserServiceInstance()
+        val (mockUserRepository: Interfaces.IUserRepository, userService) = GivenTwoUsersAndUserServiceInstance()
         whenever(mockUserRepository.GetUser("Pedro")).thenReturn(User("Rodrigo", "Fernandez", "Pedro"))
         whenever(mockUserRepository.GetUser("Lele")).thenReturn(User("Nicolas", "Soria", "Lele"))
         whenever(mockUserRepository.FollowUser("Pedro", "Lele")).thenReturn(true)
@@ -52,10 +57,6 @@ class UserServiceShould {
         ThenExpectTheSuccesMessage(receivedMessage)
 
     }
-
-
-
-}
 
 
     //region Private Methods
@@ -85,25 +86,26 @@ class UserServiceShould {
         return Pair(user, newUserData)
     }
 
-private fun WhenFollowAnotherUser(userService: UserService): ResponseEnum {
-    return userService.FollowUser("Pedro", "Lele")
-}
+    private fun WhenFollowAnotherUser(userService: UserService): ResponseEnum {
+        return userService.FollowUser("Pedro", "Lele")
+    }
 
     private fun ThenExecuteTheAddFunctionWithUserData(
-            mockUserRepository: IUserRepository,
-            userData: UserData
-        ) {
-            Mockito.verify(mockUserRepository, times(1)).AddUser(User(userData.name, userData.lastName, userData.nickName))
-        }
+        mockUserRepository: IUserRepository,
+        userData: UserData
+    ) {
+        Mockito.verify(mockUserRepository, times(1)).AddUser(User(userData.name, userData.lastName, userData.nickName))
+    }
     private fun ThenCheckIfUserExists(mockUserRepository: IUserRepository, userData: UserData) {
         verify(mockUserRepository).ExistUser(userData.nickName)
     }
     private fun ThenCheckIfEditUserFunIsCalled(
-       mockUserRepository: IUserRepository,
-       user: User,
-       newUserData: UserData
-    ) {verify(mockUserRepository).EditUser(user, newUserData.name, newUserData.lastName)
-      }
+        mockUserRepository: IUserRepository,
+        user: User,
+        newUserData: UserData
+    ) {
+        verify(mockUserRepository).EditUser(user, newUserData.name, newUserData.lastName)
+    }
     private fun ThenExpectTheSuccesMessage(receivedMessage: ResponseEnum) {
         val expectedMessage = ResponseEnum.FOUND
         assertEquals(expectedMessage, receivedMessage)
@@ -112,3 +114,5 @@ private fun WhenFollowAnotherUser(userService: UserService): ResponseEnum {
 
 //endregion
 
+
+}

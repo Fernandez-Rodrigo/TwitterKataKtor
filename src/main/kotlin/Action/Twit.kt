@@ -1,14 +1,14 @@
 package Action
 
+import DataClasses.TwitData
+import Enum.ResponseEnum
 import Interfaces.ITwitService
-import Interfaces.IUserService
-import Services.UserService
 
-class Twit(val userService : ITwitService) {
+class Twit(private val twitService : ITwitService) {
 
-    fun ExecuteTwit(message : String){
+    fun ExecuteTwit(twitData : TwitData) : ResponseEnum{
 
-        userService.Twit(message)
+       return twitService.Twit(twitData.nickName, twitData.message)
 
     }
 

@@ -31,7 +31,7 @@ class UserService (private val userRepoInterface : IUserRepository) : IUserServi
         return if(userRepoInterface.GetUser(user) != null && userRepoInterface.GetUser(followedUser) != null){
             if(userRepoInterface.FollowUser(user, followedUser))
             {
-                return ResponseEnum.FOUND
+                return ResponseEnum.SUCCESS
             }else
             {return ResponseEnum.DUPLICATED}
 
@@ -43,7 +43,7 @@ class UserService (private val userRepoInterface : IUserRepository) : IUserServi
     override fun GetFollowersList(nickName: String) : Pair<ResponseEnum, MutableList<String>> {
 
         return if (userRepoInterface.GetUser(nickName) != null) {
-            Pair(ResponseEnum.FOUND, userRepoInterface.GetFollowersList(nickName))
+            Pair(ResponseEnum.SUCCESS, userRepoInterface.GetFollowersList(nickName))
         } else {
             Pair(ResponseEnum.FAILURE, mutableListOf())
         }
@@ -57,7 +57,7 @@ class UserService (private val userRepoInterface : IUserRepository) : IUserServi
     override fun GetUserInfo(nickName : String) : Pair<ResponseEnum, UserData> {
         val user = userRepoInterface.GetUser(nickName)
         return if(user != null){
-            Pair(ResponseEnum.FOUND, UserData(user.name, user.lastName, user.nickName))
+            Pair(ResponseEnum.SUCCESS, UserData(user.name, user.lastName, user.nickName))
         }else {
             Pair(ResponseEnum.FAILURE, UserData("Null", "Null", "Null"))
         }
